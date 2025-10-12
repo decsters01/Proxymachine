@@ -69,6 +69,9 @@ class ProxyTrainer:
             # Features da fonte
             source_features = self._extract_source_features(source)
             
+            # Features de origem e qualidade
+            origin_features = self._extract_origin_features(data)
+            
             # Combinar todas as features
             feature_dict = {
                 **ip_features,
@@ -76,6 +79,7 @@ class ProxyTrainer:
                 **performance_features,
                 **anonymity_features,
                 **source_features,
+                **origin_features,
                 'is_active': 1 if is_active else 0
             }
             
@@ -213,6 +217,56 @@ class ProxyTrainer:
         }
         
         return features
+    
+    def _extract_origin_features(self, data: Dict) -> Dict:
+        """Extrai features de origem e qualidade do proxy"""
+        source = data.get('source', 'unknown')
+        discovery_method = data.get('discovery_method', 'unknown')
+        quality_score = data.get('quality_score', 0.5)
+        
+        # Features de origem
+        origin_features = {
+            'quality_score': quality_score,
+            'is_high_quality': 1 if quality_score > 0.7 else 0,
+            'is_medium_quality': 1 if 0.4 <= quality_score <= 0.7 else 0,
+            'is_low_quality': 1 if quality_score < 0.4 else 0,
+        }
+        
+        # Features de método de descoberta
+        discovery_features = {
+            'is_passive_collection': 1 if discovery_method == 'passive_collection' else 0,
+            'is_search_dorking': 1 if discovery_method == 'search_dorking' else 0,
+            'is_active_scanning': 1 if discovery_method == 'active_scanning' else 0,
+            'is_unknown_method': 1 if discovery_method == 'unknown' else 0,
+        }
+        
+        # Features de fonte específica
+        source_features = {
+            'source_public_lists': 1 if source == 'public_lists' else 0,
+            'source_google_dorks': 1 if source == 'google_dorks' else 0,
+            'source_shodan': 1 if source == 'shodan' else 0,
+            'source_pastebin': 1 if source == 'pastebin' else 0,
+            'source_port_scan': 1 if source == 'port_scan' else 0,
+            'source_unknown': 1 if source == 'unknown' else 0,
+        }
+        
+        # Features de confiabilidade baseadas na fonte
+        reliability_features = {
+            'is_shodan_source': 1 if source == 'shodan' else 0,  # Shodan é mais confiável
+            'is_port_scan_source': 1 if source == 'port_scan' else 0,  # Varredura ativa é confiável
+            'is_public_list_source': 1 if source == 'public_lists' else 0,  # Listas públicas menos confiáveis
+            'is_pastebin_source': 1 if source == 'pastebin' else 0,  # Pastebin menos confiável
+        }
+        
+        # Combinar todas as features de origem
+        all_origin_features = {
+            **origin_features,
+            **discovery_features,
+            **source_features,
+            **reliability_features
+        }
+        
+        return all_origin_features
     
     def _has_sequential_octets(self, octets: List[str]) -> bool:
         """Verifica se os octetos são sequenciais"""

@@ -15,6 +15,7 @@ import pandas as pd
 from scraper import ProxyScraper
 from checker import ProxyChecker
 from trainer import ProxyTrainer
+from hybrid_collector import HybridCollector
 from settings import MAIN_LOOP_CONFIG, PATHS
 
 # Configurar logging
@@ -29,10 +30,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class ProxygenesisAI:
-    def __init__(self):
+    def __init__(self, shodan_api_key: str = None):
         self.scraper = ProxyScraper()
         self.checker = ProxyChecker()
         self.trainer = ProxyTrainer()
+        self.hybrid_collector = HybridCollector(shodan_api_key)
         self.cycle_count = 0
         self.total_proxies_found = 0
         self.total_proxies_validated = 0
@@ -77,24 +79,23 @@ class ProxygenesisAI:
         }
         
         try:
-            # Fase 1: Coleta de Proxies Candidatos
-            logger.info("Fase 1: Coletando proxies candidatos...")
-            candidates = await self.scraper.collect_all_proxies_async()
-            cycle_stats['candidates_collected'] = len(candidates)
+            # Fase 1: Coleta Híbrida de Proxies Candidatos
+            logger.info("Fase 1: Coletando proxies candidatos (método híbrido)...")
+            candidates_data = await self.hybrid_collector.run_hybrid_collection()
+            cycle_stats['candidates_collected'] = len(candidates_data)
             
-            if not candidates:
+            if not candidates_data:
                 logger.warning("Nenhum proxy candidato encontrado neste ciclo")
                 return cycle_stats
             
-            # Limitar número de candidatos se necessário
-            if len(candidates) > MAIN_LOOP_CONFIG['max_candidates_per_cycle']:
-                candidates = candidates[:MAIN_LOOP_CONFIG['max_candidates_per_cycle']]
-                logger.info(f"Limitando candidatos para {len(candidates)}")
+            # Extrair apenas os proxies para validação
+            candidates = [candidate['proxy'] for candidate in candidates_data]
             
             # Fase 2: Priorização Inteligente (se modelo disponível)
             if self.trainer.is_trained:
                 logger.info("Fase 2: Priorizando candidatos com ML...")
-                candidates = await self._prioritize_candidates(candidates)
+                candidates_data = await self._prioritize_candidates_with_ml(candidates_data)
+                candidates = [candidate['proxy'] for candidate in candidates_data]
             
             # Fase 3: Validação de Proxies
             logger.info("Fase 3: Validando proxies...")
@@ -116,7 +117,7 @@ class ProxygenesisAI:
             
             # Fase 4: Atualizar Dados de Treinamento
             logger.info("Fase 4: Atualizando dados de treinamento...")
-            await self._update_training_data(validation_results)
+            await self._update_training_data(validation_results, candidates_data)
             
             # Fase 5: Retreinar Modelo (se necessário)
             if self._should_retrain():
@@ -138,39 +139,53 @@ class ProxygenesisAI:
         
         return cycle_stats
     
-    async def _prioritize_candidates(self, candidates: List[str]) -> List[str]:
+    async def _prioritize_candidates_with_ml(self, candidates_data: List[Dict]) -> List[Dict]:
         """
-        Prioriza candidatos usando o modelo de ML
+        Prioriza candidatos usando o modelo de ML com dados completos
         
         Args:
-            candidates: Lista de proxies candidatos
+            candidates_data: Lista de dados de candidatos com metadados
             
         Returns:
             Lista priorizada de candidatos
         """
         try:
-            # Preparar dados para predição
-            candidate_data = [{'proxy': proxy, 'source': 'unknown'} for proxy in candidates]
+            # Obter probabilidades usando o modelo
+            probabilities = self.trainer.predict_proxy_probability(candidates_data)
             
-            # Obter probabilidades
-            probabilities = self.trainer.predict_proxy_probability(candidate_data)
+            # Combinar dados com probabilidades
+            for i, candidate in enumerate(candidates_data):
+                candidate['ml_probability'] = probabilities[i]
             
-            # Combinar proxies com suas probabilidades
-            proxy_probs = list(zip(candidates, probabilities))
+            # Ordenar por probabilidade ML + qualidade da fonte
+            def priority_score(candidate):
+                ml_prob = candidate.get('ml_probability', 0.5)
+                quality_score = candidate.get('quality_score', 0.5)
+                # Combinar probabilidade ML (70%) com qualidade da fonte (30%)
+                return ml_prob * 0.7 + quality_score * 0.3
             
-            # Ordenar por probabilidade (maior primeiro)
-            proxy_probs.sort(key=lambda x: x[1], reverse=True)
+            candidates_data.sort(key=priority_score, reverse=True)
             
-            # Retornar apenas os top candidatos
-            top_count = min(MAIN_LOOP_CONFIG['top_candidates_to_test'], len(proxy_probs))
-            prioritized = [proxy for proxy, prob in proxy_probs[:top_count]]
+            # Limitar número de candidatos
+            top_count = min(MAIN_LOOP_CONFIG['top_candidates_to_test'], len(candidates_data))
+            prioritized = candidates_data[:top_count]
             
-            logger.info(f"Priorizados {len(prioritized)} candidatos de {len(candidates)}")
+            logger.info(f"Priorizados {len(prioritized)} candidatos de {len(candidates_data)}")
+            
+            # Mostrar top 5
+            if prioritized:
+                logger.info("Top 5 candidatos priorizados:")
+                for i, candidate in enumerate(prioritized[:5], 1):
+                    logger.info(f"  {i}. {candidate['proxy']} "
+                              f"(ML: {candidate.get('ml_probability', 0):.3f}, "
+                              f"Qualidade: {candidate.get('quality_score', 0):.3f}, "
+                              f"Fonte: {candidate.get('source', 'unknown')})")
+            
             return prioritized
             
         except Exception as e:
-            logger.error(f"Erro na priorização: {e}")
-            return candidates[:MAIN_LOOP_CONFIG['top_candidates_to_test']]
+            logger.error(f"Erro na priorização com ML: {e}")
+            return candidates_data[:MAIN_LOOP_CONFIG['top_candidates_to_test']]
     
     async def _save_active_proxies(self, active_proxies: List[Dict]):
         """Salva proxies ativos em arquivo"""
@@ -183,13 +198,28 @@ class ProxygenesisAI:
         except Exception as e:
             logger.error(f"Erro ao salvar proxies ativos: {e}")
     
-    async def _update_training_data(self, validation_results: List[Dict]):
+    async def _update_training_data(self, validation_results: List[Dict], candidates_data: List[Dict] = None):
         """Atualiza dados de treinamento com novos resultados"""
         try:
-            # Adicionar timestamp e fonte aos dados
+            # Adicionar timestamp aos dados
             for result in validation_results:
                 result['timestamp'] = datetime.now().isoformat()
-                result['source'] = 'scraped'
+            
+            # Se temos dados de candidatos, adicionar metadados
+            if candidates_data:
+                # Criar mapeamento de proxy para metadados
+                proxy_metadata = {candidate['proxy']: candidate for candidate in candidates_data}
+                
+                # Adicionar metadados aos resultados de validação
+                for result in validation_results:
+                    proxy = result['proxy']
+                    if proxy in proxy_metadata:
+                        metadata = proxy_metadata[proxy]
+                        result.update({
+                            'source': metadata.get('source', 'unknown'),
+                            'discovery_method': metadata.get('discovery_method', 'unknown'),
+                            'quality_score': metadata.get('quality_score', 0.5)
+                        })
             
             # Carregar dados existentes
             existing_data = []

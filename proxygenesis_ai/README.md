@@ -4,36 +4,53 @@ Sistema Inteligente de Geração e Validação de Proxies com Machine Learning
 
 ## 🎯 Objetivo
 
-O Proxygenesis AI é um sistema em Python que autonomamente encontra, valida e "aprende" os padrões de proxies funcionais para priorizar a busca e validação de novos proxies com maior probabilidade de estarem ativos.
+O Proxygenesis AI é um sistema híbrido em Python que combina **coleta passiva**, **descoberta ativa** e **machine learning** para encontrar, validar e aprender padrões de proxies funcionais, priorizando candidatos com maior probabilidade de estarem ativos.
 
 ## 🧠 Conceito Principal
 
-Em vez de "gerar" IPs do zero (que seria ineficaz), o sistema utiliza machine learning para **prever** a probabilidade de proxies candidatos estarem ativos, tornando o processo de verificação muito mais inteligente e eficiente.
+O sistema implementa uma **abordagem híbrida** que combina:
 
-## 🏗️ Arquitetura
+1. **Coleta Passiva**: Listas públicas de proxies (método tradicional)
+2. **Descoberta Ativa**: Varredura de portas e busca avançada (método inovador)
+3. **Machine Learning**: Predição inteligente baseada em 50+ atributos
 
-### Fase 1: Coleta de Proxies Candidatos (Scraper)
-- Varre a internet em busca de listas de proxies públicos
-- Suporte a múltiplas fontes (GitHub, sites especializados, etc.)
+Em vez de "gerar" IPs do zero (que seria ineficaz), o sistema utiliza ML para **prever** a probabilidade de proxies candidatos estarem ativos, tornando o processo de verificação muito mais inteligente e eficiente.
+
+## 🏗️ Arquitetura Híbrida
+
+### Fase 1: Coleta Híbrida de Candidatos
+**A. Coleta Passiva (Método Tradicional)**
+- Listas públicas de proxies (GitHub, sites especializados)
+- Fóruns e comunidades de proxies
 - Coleta assíncrona para máxima performance
-- Validação de formato IP:PORTA
 
-### Fase 2: Validação de Proxies (Checker)
-- Testa cada proxy candidato para determinar se está ativo
-- Verificação de conectividade, tempo de resposta e anonimato
-- Execução concorrente para máxima eficiência
+**B. Descoberta Ativa (Método Inovador)**
+- **Varredura de Portas**: masscan em ranges de cloud providers
+- **Google Dorks**: Busca avançada por proxies "escondidos"
+- **Shodan API**: Descoberta de proxies mal configurados
+- **Pastebin Mining**: Extração de listas em pastes
+
+**C. Priorização Inteligente**
+- Score de qualidade baseado na fonte
+- Combinação de probabilidade ML + qualidade da fonte
+- Ordenação por potencial de ativação
+
+### Fase 2: Validação Avançada (Checker)
+- Teste assíncrono de conectividade
+- Verificação de níveis de anonimato
+- Medição de performance e estabilidade
 - Critérios de sucesso configuráveis
 
-### Fase 3: Machine Learning (Trainer)
-- Engenharia de atributos avançada (IP, porta, performance, anonimato)
-- Modelo RandomForest para classificação
-- Aprendizado contínuo com novos dados
-- Predição de probabilidade de ativação
+### Fase 3: Machine Learning Avançado (Trainer)
+- **50+ Atributos**: IP, porta, performance, anonimato, origem
+- **Features de Origem**: Fonte, método de descoberta, qualidade
+- **Modelo RandomForest**: Classificação com alta precisão
+- **Aprendizado Contínuo**: Melhoria com novos dados
 
-### Fase 4: Loop de Refinamento
-- Priorização inteligente de candidatos
-- Retreinamento periódico do modelo
-- Acúmulo de conhecimento ao longo do tempo
+### Fase 4: Loop de Refinamento Inteligente
+- Priorização baseada em ML + qualidade da fonte
+- Retreinamento automático com dados enriquecidos
+- Acúmulo de conhecimento sobre padrões de qualidade
 - Otimização contínua da taxa de sucesso
 
 ## 📁 Estrutura do Projeto
