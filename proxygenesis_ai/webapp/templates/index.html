@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxygenesis AI - Sistema Inteligente de Proxies</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background animado -->
+    <div class="cyber-grid"></div>
+    <div class="particles" id="particles"></div>
+    
+    <!-- Container principal -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">◈</div>
+                <h1>PROXYGENESIS <span class="highlight">AI</span></h1>
+            </div>
+            <div class="system-status" id="systemStatus">
+                <div class="status-indicator stopped"></div>
+                <span class="status-text">SISTEMA PARADO</span>
+            </div>
+        </header>
+
+        <!-- Painel de Estatísticas -->
+        <section class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-icon">🔄</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="cyclesCount">0</div>
+                    <div class="stat-label">CICLOS COMPLETOS</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="totalCandidates">0</div>
+                    <div class="stat-label">CANDIDATOS</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">✓</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="activeProxies">0</div>
+                    <div class="stat-label">PROXIES ATIVOS</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="successRate">0%</div>
+                    <div class="stat-label">TAXA DE SUCESSO</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controles do Sistema -->
+        <section class="control-panel">
+            <h2 class="panel-title">
+                <span class="title-icon">⚡</span>
+                CONTROLE DO SISTEMA
+            </h2>
+            
+            <div class="control-buttons">
+                <button class="btn btn-start" id="btnStart" onclick="startSystem()">
+                    <span class="btn-icon">▶</span>
+                    INICIAR SISTEMA
+                </button>
+                
+                <button class="btn btn-stop" id="btnStop" onclick="stopSystem()" disabled>
+                    <span class="btn-icon">⬛</span>
+                    PARAR SISTEMA
+                </button>
+                
+                <button class="btn btn-cycle" id="btnCycle" onclick="runSingleCycle()">
+                    <span class="btn-icon">🔄</span>
+                    EXECUTAR CICLO
+                </button>
+                
+                <button class="btn btn-download" onclick="downloadProxies()">
+                    <span class="btn-icon">⬇</span>
+                    BAIXAR PROXIES
+                </button>
+            </div>
+        </section>
+
+        <!-- Status do Modelo ML -->
+        <section class="ml-panel">
+            <h2 class="panel-title">
+                <span class="title-icon">🧠</span>
+                INTELIGÊNCIA ARTIFICIAL
+            </h2>
+            
+            <div class="ml-status">
+                <div class="ml-info">
+                    <div class="ml-item">
+                        <span class="ml-label">Modelo Treinado:</span>
+                        <span class="ml-value" id="modelTrained">NÃO</span>
+                    </div>
+                    <div class="ml-item">
+                        <span class="ml-label">Amostras de Treino:</span>
+                        <span class="ml-value" id="trainingSamples">0</span>
+                    </div>
+                </div>
+                <div class="ml-indicator" id="mlIndicator">
+                    <div class="pulse-ring"></div>
+                    <span>AGUARDANDO DADOS</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lista de Proxies Ativos -->
+        <section class="proxies-panel">
+            <h2 class="panel-title">
+                <span class="title-icon">📋</span>
+                PROXIES ATIVOS
+            </h2>
+            
+            <div class="proxies-header">
+                <div class="proxy-count">
+                    Total: <span id="proxyCount">0</span> proxies
+                </div>
+                <button class="btn btn-refresh" onclick="loadActiveProxies()">
+                    🔄 ATUALIZAR
+                </button>
+            </div>
+            
+            <div class="proxies-list" id="proxiesList">
+                <div class="no-proxies">
+                    <div class="no-proxies-icon">◈</div>
+                    <p>Nenhum proxy ativo encontrado</p>
+                    <p class="hint">Inicie o sistema para coletar proxies</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Log de Atividades -->
+        <section class="log-panel">
+            <h2 class="panel-title">
+                <span class="title-icon">📝</span>
+                LOG DE ATIVIDADES
+            </h2>
+            
+            <div class="log-container" id="logContainer">
+                <div class="log-entry info">
+                    <span class="log-time">--:--:--</span>
+                    <span class="log-message">Sistema inicializado. Aguardando comando...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>Proxygenesis AI v2.0 - Sistema Inteligente de Geração e Validação de Proxies</p>
+                <p class="footer-hint">Auto-hospedado • Dark Mode • Interface Futurista</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,273 +1,235 @@
-# Proxygenesis AI
+# 🚀 PROXYGENESIS AI v2.0
 
-Sistema Inteligente de Geração e Validação de Proxies com Machine Learning
+## Sistema Inteligente de Geração e Validação de Proxies com Interface Web Futurista
 
-## 🎯 Objetivo
+![Status](https://img.shields.io/badge/status-active-success)
+![Python](https://img.shields.io/badge/python-3.8+-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-O Proxygenesis AI é um sistema híbrido em Python que combina **coleta passiva**, **descoberta ativa** e **machine learning** para encontrar, validar e aprender padrões de proxies funcionais, priorizando candidatos com maior probabilidade de estarem ativos.
+### ✨ Funcionalidades
 
-## 🧠 Conceito Principal
+- **Coleta Híbrida**: Combina múltiplas fontes (listas públicas, Google Dorks, Shodan, varredura ativa)
+- **Validação Inteligente**: Testa proxies em tempo real com verificação de anonimato
+- **Machine Learning**: Modelo que aprende com proxies válidos para priorizar candidatos
+- **Interface Web Moderna**: Dashboard futurista dark mode com atualizações em tempo real
+- **Auto-Hospedável**: Fácil instalação em VPS para rodar 24/7
 
-O sistema implementa uma **abordagem híbrida** que combina:
+---
 
-1. **Coleta Passiva**: Listas públicas de proxies (método tradicional)
-2. **Descoberta Ativa**: Varredura de portas e busca avançada (método inovador)
-3. **Machine Learning**: Predição inteligente baseada em 50+ atributos
+## 📋 Requisitos
 
-Em vez de "gerar" IPs do zero (que seria ineficaz), o sistema utiliza ML para **prever** a probabilidade de proxies candidatos estarem ativos, tornando o processo de verificação muito mais inteligente e eficiente.
+- Python 3.8+
+- VPS ou servidor local
+- Conexão com internet
 
-## 🏗️ Arquitetura Híbrida
+---
 
-### Fase 1: Coleta Híbrida de Candidatos
-**A. Coleta Passiva (Método Tradicional)**
-- Listas públicas de proxies (GitHub, sites especializados)
-- Fóruns e comunidades de proxies
-- Coleta assíncrona para máxima performance
+## 🔧 Instalação
 
-**B. Descoberta Ativa (Método Inovador)**
-- **Varredura de Portas**: masscan em ranges de cloud providers
-- **Google Dorks**: Busca avançada por proxies "escondidos"
-- **Shodan API**: Descoberta de proxies mal configurados
-- **Pastebin Mining**: Extração de listas em pastes
+### 1. Clone o repositório ou acesse a pasta do projeto
 
-**C. Priorização Inteligente**
-- Score de qualidade baseado na fonte
-- Combinação de probabilidade ML + qualidade da fonte
-- Ordenação por potencial de ativação
-
-### Fase 2: Validação Avançada (Checker)
-- Teste assíncrono de conectividade
-- Verificação de níveis de anonimato
-- Medição de performance e estabilidade
-- Critérios de sucesso configuráveis
-
-### Fase 3: Machine Learning Avançado (Trainer)
-- **50+ Atributos**: IP, porta, performance, anonimato, origem
-- **Features de Origem**: Fonte, método de descoberta, qualidade
-- **Modelo RandomForest**: Classificação com alta precisão
-- **Aprendizado Contínuo**: Melhoria com novos dados
-
-### Fase 4: Loop de Refinamento Inteligente
-- Priorização baseada em ML + qualidade da fonte
-- Retreinamento automático com dados enriquecidos
-- Acúmulo de conhecimento sobre padrões de qualidade
-- Otimização contínua da taxa de sucesso
-
-## 📁 Estrutura do Projeto
-
-```
-/proxygenesis_ai
-├── main.py              # Orquestrador principal
-├── scraper.py           # Módulo de coleta (Fase 1)
-├── checker.py           # Módulo de validação (Fase 2)
-├── trainer.py           # Módulo de ML (Fase 3)
-├── settings.py          # Configurações
-├── requirements.txt     # Dependências
-├── README.md           # Documentação
-├── /data
-│   ├── training_data.csv   # Dados de treinamento
-│   └── active_proxies.txt  # Proxies ativos encontrados
-└── /models
-    └── proxy_classifier.pkl # Modelo de ML salvo
-```
-
-## 🚀 Instalação
-
-1. **Clone o repositório:**
 ```bash
-git clone <repository-url>
 cd proxygenesis_ai
 ```
 
-2. **Instale as dependências:**
+### 2. Instale as dependências
+
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Execute o sistema:**
+### 3. Execute o servidor web
+
 ```bash
-python main.py
+cd webapp
+python server.py
 ```
 
-## ⚙️ Configuração
+### 4. Acesse a interface
 
-Todas as configurações estão no arquivo `settings.py`:
-
-- **Fontes de Proxies**: URLs para coleta
-- **Configurações de Scraping**: Timeouts, delays, user-agents
-- **Configurações de Validação**: URLs de teste, critérios de sucesso
-- **Configurações de ML**: Parâmetros do modelo, frequência de retreinamento
-- **Configurações do Loop**: Limites de candidatos, priorização
-
-## 🔧 Uso
-
-### Execução Básica
-```python
-from main import ProxygenesisAI
-import asyncio
-
-async def run_system():
-    system = ProxygenesisAI()
-    await system.run_continuous(max_cycles=5)
-
-asyncio.run(run_system())
+Abra seu navegador e acesse:
+```
+http://localhost:8000
 ```
 
-### Execução de Módulos Individuais
-
-**Testar Scraper:**
-```bash
-python scraper.py
+Ou na sua VPS:
 ```
-
-**Testar Checker:**
-```bash
-python checker.py
+http://SEU_IP:8000
 ```
-
-**Testar Trainer:**
-```bash
-python trainer.py
-```
-
-## 📊 Features Principais
-
-### Scraper Inteligente
-- ✅ Múltiplas fontes de proxies
-- ✅ Parsing robusto de HTML
-- ✅ Validação de formato IP:PORTA
-- ✅ Coleta assíncrona
-- ✅ Tratamento de erros robusto
-
-### Validador Eficiente
-- ✅ Teste de conectividade
-- ✅ Verificação de anonimato
-- ✅ Medição de performance
-- ✅ Execução concorrente
-- ✅ Timeouts configuráveis
-
-### Machine Learning Avançado
-- ✅ 20+ atributos de engenharia
-- ✅ Modelo RandomForest
-- ✅ Predição de probabilidade
-- ✅ Aprendizado contínuo
-- ✅ Persistência do modelo
-
-### Loop de Otimização
-- ✅ Priorização inteligente
-- ✅ Retreinamento automático
-- ✅ Acúmulo de conhecimento
-- ✅ Estatísticas detalhadas
-- ✅ Execução contínua
-
-## 📈 Métricas e Estatísticas
-
-O sistema coleta e exibe:
-- Número de candidatos coletados
-- Taxa de sucesso na validação
-- Tempo médio de resposta
-- Distribuição de níveis de anonimato
-- Performance do modelo de ML
-- Estatísticas por ciclo e gerais
-
-## 🔍 Engenharia de Atributos
-
-O modelo utiliza 20+ atributos:
-
-**Atributos do IP:**
-- Octetos individuais
-- Soma, média e desvio padrão
-- Tipo (privado, loopback, multicast)
-- Padrões (repetidos, sequenciais)
-
-**Atributos da Porta:**
-- Número da porta
-- Categorias (HTTP, HTTPS, SOCKS, Squid)
-- Faixas (bem conhecidas, registradas, dinâmicas)
-- Características numéricas
-
-**Atributos de Performance:**
-- Tempo de resposta
-- Categorias de velocidade
-- Disponibilidade
-
-**Atributos de Anonimato:**
-- Nível de anonimato
-- Categorias específicas
-
-## 🛠️ Personalização
-
-### Adicionar Novas Fontes
-Edite `settings.py` e adicione URLs à lista `PROXY_SOURCES`:
-
-```python
-PROXY_SOURCES = [
-    "https://sua-nova-fonte.com/proxies",
-    # ... outras fontes
-]
-```
-
-### Ajustar Parâmetros de ML
-Modifique `ML_CONFIG` em `settings.py`:
-
-```python
-ML_CONFIG = {
-    'model_type': 'RandomForestClassifier',
-    'n_estimators': 200,  # Mais árvores
-    'max_depth': 15,      # Profundidade maior
-    # ... outros parâmetros
-}
-```
-
-### Configurar Validação
-Ajuste `VALIDATION_CONFIG`:
-
-```python
-VALIDATION_CONFIG = {
-    'test_url': 'https://api.ipify.org',  # URL diferente
-    'timeout': 10,                        # Timeout maior
-    'max_concurrent_checks': 200,         # Mais concorrência
-}
-```
-
-## 📝 Logs
-
-O sistema gera logs detalhados em:
-- Console (tempo real)
-- Arquivo `proxygenesis.log`
-
-Níveis de log: INFO, WARNING, ERROR
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para detalhes.
-
-## 🆘 Suporte
-
-Para dúvidas ou problemas:
-1. Verifique os logs
-2. Consulte a documentação
-3. Abra uma issue no GitHub
-
-## 🔮 Roadmap
-
-- [ ] Suporte a proxies SOCKS
-- [ ] Interface web para monitoramento
-- [ ] API REST para integração
-- [ ] Suporte a proxies rotativos
-- [ ] Análise de geolocalização
-- [ ] Detecção de proxies premium
-- [ ] Integração com bancos de dados
-- [ ] Métricas avançadas de performance
 
 ---
 
-**Proxygenesis AI** - Transformando a descoberta de proxies com inteligência artificial! 🚀
+## 🎮 Uso
+
+### Interface Web
+
+1. **Iniciar Sistema**: Clique em "INICIAR SISTEMA" para começar a coleta contínua
+2. **Executar Ciclo**: Execute um único ciclo de coleta e validação
+3. **Monitorar**: Acompanhe em tempo real as estatísticas e logs
+4. **Baixar Proxies**: Exporte a lista de proxies ativos
+
+### API Endpoints
+
+| Endpoint | Método | Descrição |
+|----------|--------|-----------|
+| `/api/status` | GET | Status atual do sistema |
+| `/api/proxies/active` | GET | Lista de proxies ativos |
+| `/api/system/start` | POST | Inicia o sistema |
+| `/api/system/stop` | POST | Para o sistema |
+| `/api/system/cycle` | POST | Executa um ciclo único |
+| `/api/model/info` | GET | Informações do modelo ML |
+| `/api/download/proxies` | GET | Download da lista de proxies |
+| `/ws` | WebSocket | Conexão para atualizações em tempo real |
+
+---
+
+## 🏗️ Arquitetura
+
+```
+proxygenesis_ai/
+├── webapp/
+│   ├── server.py          # Servidor FastAPI
+│   ├── templates/
+│   │   └── index.html     # Interface principal
+│   └── static/
+│       ├── css/
+│       │   └── style.css  # Estilos futuristas
+│       └── js/
+│           └── app.js     # Lógica frontend
+├── main.py                # Orquestrador principal
+├── hybrid_collector.py    # Coleta híbrida de proxies
+├── checker.py             # Validação de proxies
+├── trainer.py             # Treinamento do modelo ML
+├── scraper.py             # Scraping de listas
+├── port_scanner.py        # Varredura de portas
+├── search_dorking.py      # Busca avançada
+└── settings.py            # Configurações
+```
+
+---
+
+## ⚙️ Configuração
+
+Edite `settings.py` para personalizar:
+
+- Fontes de proxies
+- Timeout e concorrência
+- Configurações de ML
+- Caminhos de arquivos
+
+---
+
+## 🎨 Features da Interface
+
+- **Design Cyberpunk/Futurista**: Visual dark com neon cyan e efeitos glow
+- **Animações**: Partículas, grid animado, indicadores pulsantes
+- **Responsivo**: Funciona em desktop e mobile
+- **Tempo Real**: WebSocket para atualizações instantâneas
+- **Logs Interativos**: Acompanhamento detalhado de atividades
+
+---
+
+## 🔒 Segurança
+
+- Execute em ambiente isolado (VPS dedicada recomendada)
+- Não use proxies para atividades ilegais
+- Respeite os termos de serviço das fontes
+
+---
+
+## 📊 Como Funciona
+
+1. **Coleta**: Agrega proxies de múltiplas fontes
+2. **Priorização**: ML classifica candidatos por probabilidade de sucesso
+3. **Validação**: Testa cada proxy com critérios rigorosos
+4. **Armazenamento**: Salva proxies ativos em arquivo
+5. **Aprendizado**: Atualiza modelo com novos dados
+6. **Repetição**: Loop contínuo para manter lista atualizada
+
+---
+
+## 🛠️ Rodando em Produção (VPS)
+
+### Systemd Service
+
+Crie `/etc/systemd/system/proxygenesis.service`:
+
+```ini
+[Unit]
+Description=Proxygenesis AI Web Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/path/to/proxygenesis_ai/webapp
+ExecStart=/usr/bin/python3 server.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Ative e inicie:
+
+```bash
+systemctl enable proxygenesis
+systemctl start proxygenesis
+systemctl status proxygenesis
+```
+
+### Nginx Reverse Proxy (Opcional)
+
+Para usar domínio próprio com HTTPS:
+
+```nginx
+server {
+    listen 80;
+    server_name seu-dominio.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+---
+
+## 📈 Melhorias Futuras
+
+- [ ] Autenticação de usuários
+- [ ] Banco de dados para histórico
+- [ ] Gráficos e analytics
+- [ ] API keys para Shodan integration
+- [ ] Suporte a proxies SOCKS5
+- [ ] Exportação em múltiplos formatos
+
+---
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Abra issues e pull requests.
+
+---
+
+## 📄 Licença
+
+MIT License - Use livremente.
+
+---
+
+## 💡 Dicas
+
+- Execute em segundo plano com `nohup` ou `screen`
+- Monitore uso de recursos da VPS
+- Ajuste `max_concurrent_checks` conforme capacidade do servidor
+- Use chaves de API (Shodan) para melhores resultados
+
+---
+
+**Proxygenesis AI** - Inteligência artificial aplicada à descoberta de proxies! 🚀
