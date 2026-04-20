@@ -36,7 +36,7 @@ app.add_middleware(
 )
 
 # Montar arquivos estáticos
-static_path = Path(__file__).parent / "webapp" / "static"
+static_path = Path(__file__).parent / "static"
 static_path.mkdir(parents=True, exist_ok=True)
 app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
 
@@ -98,7 +98,7 @@ async def startup_event():
 @app.get("/", response_class=HTMLResponse)
 async def root():
     """Serve a página principal"""
-    template_path = Path(__file__).parent / "webapp" / "templates" / "index.html"
+    template_path = Path(__file__).parent / "templates" / "index.html"
     if template_path.exists():
         with open(template_path, 'r', encoding='utf-8') as f:
             return HTMLResponse(content=f.read())
