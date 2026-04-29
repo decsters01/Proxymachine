@@ -9,13 +9,13 @@ mkdir -p database ml_enhanced api utils models data
 # Check if database exists, if not initialize
 if [ ! -f "proxygenesis.db" ]; then
     echo "📦 Initializing database..."
-    python -c "from database.db_manager import init_database; init_database()"
+    python3 -c "from database.db_manager import init_database; init_database()"
 fi
 
 # Install dependencies if needed
-if ! python -c "import xgboost" 2>/dev/null; then
+if ! python3 -c "import xgboost" 2>/dev/null; then
     echo "📦 Installing enhanced dependencies..."
-    pip install -r requirements.txt --quiet
+    python3 -m pip install -r requirements.txt --quiet
 fi
 
 # Start the web server with API
@@ -24,7 +24,7 @@ echo "📖 API Documentation: http://localhost:8001/docs"
 echo ""
 
 # Run both servers (web UI + API)
-python -c "
+python3 -c "
 import asyncio
 import uvicorn
 from webapp.server import app as web_app
